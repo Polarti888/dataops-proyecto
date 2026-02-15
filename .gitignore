@@ -1,0 +1,8 @@
+# Configuración y credenciales
+app/config.json
+
+# Archivos de datos y resultados
+data/*.csv
+data/*.xlsx
+__pycache__/
+.DS_Store
