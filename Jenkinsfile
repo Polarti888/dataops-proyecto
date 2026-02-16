@@ -7,28 +7,27 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            steps { 
-                checkout scm 
-            }
+            steps { checkout scm }
         }
 
         stage('Build') {
-            steps {
-                sh 'docker build -t $IMAGE .'
-            }
+            steps { sh 'docker build -t $IMAGE .' }
         }
 
         stage('Test job') {
             steps {
                 sh 'mkdir -p $WORKSPACE/output'
-                sh '''
-                  docker run --rm \
-                    -e CONFIG_FILE=/app/config.json \
-                    -v $WORKSPACE/app/config.json:/app/config.json:ro \
-                    -v $WORKSPACE/app/data:/app/data:ro \
-                    -v $WORKSPACE/output:/app/output \
-                    $IMAGE
-                '''
+                // Usamos el secreto de Jenkins aquí
+                withCredentials([file(credentialsId: 'config-json-file', variable: 'CONFIG_PATH')]) {
+                    sh '''
+                      docker run --rm \
+                        -e CONFIG_FILE=/app/config.json \
+                        -v $CONFIG_PATH:/app/config.json:ro \
+                        -v $WORKSPACE/app/data:/app/data:ro \
+                        -v $WORKSPACE/output:/app/output \
+                        $IMAGE
+                    '''
+                }
             }
         }
     }
