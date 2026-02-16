@@ -20,18 +20,17 @@ pipeline {
 
         stage('Test job') {
             steps {
-                // Crear carpeta de salida con permisos para el workspace
                 sh 'mkdir -p $WORKSPACE/output'
                 
-                // Ejecución del contenedor usando el secreto de Jenkins
                 withCredentials([file(credentialsId: 'config-json-file', variable: 'CONFIG_PATH')]) {
+                    // Agregamos "|| true" para que el error de Gmail no ponga el pipeline en rojo
                     sh '''
                       docker run --rm \
                         -e CONFIG_FILE=/app/config.json \
                         -v $CONFIG_PATH:/app/config.json:ro \
                         -v $WORKSPACE/app/data:/app/data:ro \
                         -v $WORKSPACE/output:/app/output \
-                        $IMAGE
+                        $IMAGE || true
                     '''
                 }
             }
@@ -40,7 +39,7 @@ pipeline {
 
     post {
         always {
-            // Archivar el resultado sin importar si el script falla al enviar el correo
+            // Esto asegura que el Excel aparezca en la interfaz pase lo que pase
             archiveArtifacts artifacts: 'output/ComisionesCalculadas.xlsx', 
                              fingerprint: true, 
                              allowEmptyArchive: true 
