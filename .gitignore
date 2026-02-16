@@ -1,9 +1,11 @@
-
 # Archivos de datos y resultados
 data/*.csv
 data/*.xlsx
 __pycache__/
 .DS_Store
 
-#Credenciales y configuraciones sensibles
+# Credenciales y configuraciones sensibles
 app/config.json
+
+# Carpetas de documentacion interna
+instrucciones/
