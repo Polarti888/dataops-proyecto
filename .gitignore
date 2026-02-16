@@ -4,3 +4,6 @@ data/*.csv
 data/*.xlsx
 __pycache__/
 .DS_Store
+
+#Credenciales y configuraciones sensibles
+app/config.json
